@@ -1,14 +1,15 @@
-package mapmatcher;
+package com.github.nik9000.mapmatcher;
 
-import static mapmatcher.ListMatcher.matchesList;
-import static mapmatcher.MapMatcher.assertMap;
-import static mapmatcher.MapMatcher.matchesMap;
+import static com.github.nik9000.mapmatcher.ListMatcher.matchesList;
+import static com.github.nik9000.mapmatcher.MapMatcher.assertMap;
+import static com.github.nik9000.mapmatcher.MapMatcher.matchesMap;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -21,7 +22,8 @@ import org.junit.jupiter.api.Test;
 public class DocTest {
   @Test
   public void codeMatches() throws IOException {
-    String file = Files.readString(Path.of("src/test/java/mapmatcher/DocTest.java"), StandardCharsets.UTF_8);
+    String path = DocTest.class.getName().replace('.', File.separatorChar);
+    String file = Files.readString(Path.of("src/test/java/" + path + ".java"), StandardCharsets.UTF_8);
     int start = file.indexOf("// CODESTART\n");
     assert start > 0;
     start = file.indexOf('\n', start) + 1;
