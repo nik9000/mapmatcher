@@ -2,12 +2,12 @@
  * Copyright 2021 Nikolas Everett
  * SPDX-License-Identifier: Apache-2.0
  */
-package mapmatcher;
+package com.github.nik9000.mapmatcher;
 
-import static mapmatcher.ListMatcher.matchesList;
-import static mapmatcher.MapMatcher.matchesMap;
-import static mapmatcher.MapMatcherTest.assertDescribeTo;
-import static mapmatcher.MapMatcherTest.assertMismatch;
+import static com.github.nik9000.mapmatcher.ListMatcher.matchesList;
+import static com.github.nik9000.mapmatcher.MapMatcher.matchesMap;
+import static com.github.nik9000.mapmatcher.MapMatcherTest.assertDescribeTo;
+import static com.github.nik9000.mapmatcher.MapMatcherTest.assertMismatch;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 

@@ -2,14 +2,14 @@
  * Copyright 2021 Nikolas Everett
  * SPDX-License-Identifier: Apache-2.0
  */
-package mapmatcher;
+package com.github.nik9000.mapmatcher;
 
-import static mapmatcher.MapMatcher.describeEntry;
-import static mapmatcher.MapMatcher.describeEntryMissing;
-import static mapmatcher.MapMatcher.describeEntryUnexepected;
-import static mapmatcher.MapMatcher.describeEntryValue;
-import static mapmatcher.MapMatcher.describeMatcher;
-import static mapmatcher.MapMatcher.maxKeyWidthForMatcher;
+import static com.github.nik9000.mapmatcher.MapMatcher.describeEntry;
+import static com.github.nik9000.mapmatcher.MapMatcher.describeEntryMissing;
+import static com.github.nik9000.mapmatcher.MapMatcher.describeEntryUnexepected;
+import static com.github.nik9000.mapmatcher.MapMatcher.describeEntryValue;
+import static com.github.nik9000.mapmatcher.MapMatcher.describeMatcher;
+import static com.github.nik9000.mapmatcher.MapMatcher.maxKeyWidthForMatcher;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.util.ArrayList;

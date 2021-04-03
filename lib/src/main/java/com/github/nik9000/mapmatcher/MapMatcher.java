@@ -2,7 +2,7 @@
  * Copyright 2021 Nikolas Everett
  * SPDX-License-Identifier: Apache-2.0
  */
-package mapmatcher;
+package com.github.nik9000.mapmatcher;
 
 import static org.hamcrest.Matchers.equalTo;
 
