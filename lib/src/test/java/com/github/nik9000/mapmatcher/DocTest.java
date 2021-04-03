@@ -1,3 +1,7 @@
+/*
+ * Copyright 2021 Nikolas Everett
+ * SPDX-License-Identifier: Apache-2.0
+ */
 package com.github.nik9000.mapmatcher;
 
 import static com.github.nik9000.mapmatcher.ListMatcher.matchesList;

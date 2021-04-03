@@ -1,5 +1,6 @@
 plugins {
   `java-library`
+  id("com.github.hierynomus.license") version "0.15.0"
 }
 
 java {
@@ -21,4 +22,9 @@ dependencies {
 
 tasks.test {
   useJUnitPlatform()
+}
+
+license {
+  header = rootProject.file("LICENSE_HEADER")
+  exclude("*.json")
 }
