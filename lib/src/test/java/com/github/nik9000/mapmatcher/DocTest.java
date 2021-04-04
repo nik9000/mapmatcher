@@ -2,6 +2,7 @@
  * Copyright 2021 Nikolas Everett
  * SPDX-License-Identifier: Apache-2.0
  */
+
 package com.github.nik9000.mapmatcher;
 
 import static com.github.nik9000.mapmatcher.ListMatcher.matchesList;
@@ -23,23 +24,29 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests for the examples in the README file.
+ */
 public class DocTest {
   @Test
   public void codeMatches() throws IOException {
     String path = DocTest.class.getName().replace('.', File.separatorChar);
-    String file = Files.readString(Path.of("src/test/java/" + path + ".java"), StandardCharsets.UTF_8);
+    String file = Files.readString(Path.of("src/test/java/" + path + ".java"),
+        StandardCharsets.UTF_8);
     int start = file.indexOf("// CODESTART\n");
     assert start > 0;
     start = file.indexOf('\n', start) + 1;
     int end = file.indexOf("// CODEEND\n", start);
     end = file.lastIndexOf('\n', end);
     assert end > 0;
-    assertThat(file.substring(start, end).replaceAll("(?m)^      ", ""), equalTo(readmeChunk("code")));
+    assertThat(file.substring(start, end).replaceAll("(?m)^      ", ""),
+        equalTo(readmeChunk("code")));
   }
 
   @Test
   public void errorMessageMatches() throws IOException {
     try {
+      // @formatter:off
       // CODESTART
       assertMap(Map.of(
           "list", List.of(2, 3, 4),
@@ -54,10 +61,9 @@ public class DocTest {
           .entry("element", 3)
           .entry("sub", matchesMap()
             .entry("a", 1)
-            .entry("b", both(greaterThan(1)).and(lessThan(3)))
-          )
-        );
+            .entry("b", both(greaterThan(1)).and(lessThan(3)))));
       // CODEEND
+      // @formatter:on
     } catch (AssertionError e) {
       assertThat(e.toString(), equalTo(readmeChunk("failure-message")));
     }

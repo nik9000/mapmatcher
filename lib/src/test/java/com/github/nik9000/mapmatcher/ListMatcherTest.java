@@ -2,6 +2,7 @@
  * Copyright 2021 Nikolas Everett
  * SPDX-License-Identifier: Apache-2.0
  */
+
 package com.github.nik9000.mapmatcher;
 
 import static com.github.nik9000.mapmatcher.ListMatcher.matchesList;
@@ -65,7 +66,9 @@ class ListMatcherTest {
     mismatch.append("0: expected <1> but was <5>\n");
     mismatch.append("1: <6>\n");
     mismatch.append("2: expected <10> but was <7>");
-    assertMismatch(List.of(5, 6, 7), matchesList().item(1).item(6).item(10), equalTo(mismatch.toString()));
+    assertMismatch(List.of(5, 6, 7),
+        matchesList().item(1).item(6).item(10),
+        equalTo(mismatch.toString()));
   }
 
   @Test
@@ -75,7 +78,8 @@ class ListMatcherTest {
     mismatch.append("0: a map containing\n");
     mismatch.append("bar: expected <1> but was <2>\n");
     mismatch.append("1: <2>");
-    assertMismatch(List.of(Map.of("bar", 2), 2), matchesList().item(matchesMap().entry("bar", 1)).item(2),
+    assertMismatch(List.of(Map.of("bar", 2), 2),
+        matchesList().item(matchesMap().entry("bar", 1)).item(2),
         equalTo(mismatch.toString()));
   }
 
@@ -86,7 +90,8 @@ class ListMatcherTest {
     mismatch.append("0: a list containing\n");
     mismatch.append("  0: expected <1> but was <2>\n");
     mismatch.append("1: <2>");
-    assertMismatch(List.of(List.of(2), 2), matchesList().item(matchesList().item(1)).item(2),
+    assertMismatch(List.of(List.of(2), 2),
+        matchesList().item(matchesList().item(1)).item(2),
         equalTo(mismatch.toString()));
   }
 
@@ -118,7 +123,8 @@ class ListMatcherTest {
     description.append("0: <1>\n");
     description.append("1: a list containing\n");
     description.append("  0: <0>");
-    assertDescribeTo(matchesList().item(1).item(matchesList().item(0)), equalTo(description.toString()));
+    assertDescribeTo(matchesList().item(1).item(matchesList().item(0)),
+        equalTo(description.toString()));
   }
 
   @Test
@@ -128,6 +134,7 @@ class ListMatcherTest {
     description.append("0: <1>\n");
     description.append("1: a map containing\n");
     description.append("foo: <0>");
-    assertDescribeTo(matchesList().item(1).item(matchesMap().entry("foo", 0)), equalTo(description.toString()));
+    assertDescribeTo(matchesList().item(1).item(matchesMap().entry("foo", 0)),
+        equalTo(description.toString()));
   }
 }

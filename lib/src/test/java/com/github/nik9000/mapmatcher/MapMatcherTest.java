@@ -2,6 +2,7 @@
  * Copyright 2021 Nikolas Everett
  * SPDX-License-Identifier: Apache-2.0
  */
+
 package com.github.nik9000.mapmatcher;
 
 import static com.github.nik9000.mapmatcher.ListMatcher.matchesList;
@@ -45,7 +46,9 @@ class MapMatcherTest {
     StringBuilder mismatch = new StringBuilder();
     mismatch.append("a map containing\n");
     mismatch.append("foo: expected \"bar\" but was \"baz\"");
-    assertMismatch(Map.of("foo", "baz"), matchesMap().entry("foo", "bar"), equalTo(mismatch.toString()));
+    assertMismatch(Map.of("foo", "baz"),
+        matchesMap().entry("foo", "bar"),
+        equalTo(mismatch.toString()));
   }
 
   @Test
@@ -115,9 +118,13 @@ class MapMatcherTest {
         matchesMap().entry("took", 57.0)
             .entry("timed_out", false)
             .entry("_shards",
-                matchesMap().entry("total", 1.0).entry("successful", 1.0).entry("skipped", 0.0).entry("failed", 0.0))
+                matchesMap().entry("total", 1.0)
+                    .entry("successful", 1.0)
+                    .entry("skipped", 0.0)
+                    .entry("failed", 0.0))
             .entry("hits",
-                matchesMap().entry("total", matchesMap().entry("value", 10000.0).entry("relation", "gte"))
+                matchesMap()
+                    .entry("total", matchesMap().entry("value", 10000.0).entry("relation", "gte"))
                     .entry("max_score", 1.0)
                     .entry("hits",
                         matchesList().item(matchesMap().entry("_index", "nyc_taxis")
@@ -155,7 +162,9 @@ class MapMatcherTest {
   }
 
   private Map<?, ?> read(String file) throws IOException {
-    try (InputStream data = Thread.currentThread().getContextClassLoader().getResourceAsStream(file)) {
+    try (InputStream data = Thread.currentThread()
+        .getContextClassLoader()
+        .getResourceAsStream(file)) {
       return new Gson().fromJson(new InputStreamReader(data, StandardCharsets.UTF_8), Map.class);
     }
   }
@@ -181,7 +190,8 @@ class MapMatcherTest {
     description.append("foo: <1>\n");
     description.append("bar: a list containing\n");
     description.append("    0: <0>");
-    assertDescribeTo(matchesMap().entry("foo", 1).entry("bar", matchesList().item(0)), equalTo(description.toString()));
+    assertDescribeTo(matchesMap().entry("foo", 1).entry("bar", matchesList().item(0)),
+        equalTo(description.toString()));
   }
 
   @Test
@@ -195,7 +205,8 @@ class MapMatcherTest {
         equalTo(description.toString()));
   }
 
-  static <T> void assertMismatch(T v, Matcher<? super T> matcher, Matcher<String> mismatchDescriptionMatcher) {
+  static <T> void assertMismatch(T v, Matcher<? super T> matcher,
+      Matcher<String> mismatchDescriptionMatcher) {
     assertMap(v, not(matcher));
     StringDescription description = new StringDescription();
     matcher.describeMismatch(v, description);
