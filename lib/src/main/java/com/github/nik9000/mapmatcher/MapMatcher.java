@@ -33,21 +33,17 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
 
   /**
    * Assert match. Shorter output on failure than {@link MatcherAssert#assertThat(Object, Matcher)}
-   * that looks better for {@link MapMatcher}.
+   * that looks better for {@link MapMatcher} and {@link ListMatcher}.
    */
-  public static void assertMap(Map<?, ?> actual, MapMatcher matcher) {
+  public static <T> void assertMap(T actual, Matcher<? super T> matcher) {
     assertMap("", actual, matcher);
   }
 
   /**
    * Assert match. Shorter output on failure than {@link MatcherAssert#assertThat(Object, Matcher)}
-   * that looks better for {@link MapMatcher}.
+   * that looks better for {@link MapMatcher} and {@link ListMatcher}.
    */
-  public static void assertMap(String reason, Map<?, ?> actual, MapMatcher matcher) {
-    assertThat(reason, actual, matcher);
-  }
-
-  static <T> void assertThat(String reason, T actual, Matcher<? super T> matcher) {
+  public static <T> void assertMap(String reason, T actual, Matcher<? super T> matcher) {
     if (matcher.matches(actual)) {
       return;
     }
