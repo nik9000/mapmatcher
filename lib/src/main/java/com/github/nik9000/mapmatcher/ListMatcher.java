@@ -2,6 +2,7 @@
  * Copyright 2021 Nikolas Everett
  * SPDX-License-Identifier: Apache-2.0
  */
+
 package com.github.nik9000.mapmatcher;
 
 import static com.github.nik9000.mapmatcher.MapMatcher.describeEntry;
@@ -60,6 +61,7 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
 
   /**
    * {@inheritDoc}
+   *
    * @hidden
    */
   @Override
@@ -72,7 +74,8 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
     Iterator<?> value = item.iterator();
     Iterator<Matcher<?>> matcher = matchers.iterator();
     while (matcher.hasNext()) {
-      max = Math.max(max, maxKeyWidthForMatcher(value.hasNext() ? value.next() : null, matcher.next()));
+      max = Math.max(max,
+          maxKeyWidthForMatcher(value.hasNext() ? value.next() : null, matcher.next()));
     }
     return max;
   }

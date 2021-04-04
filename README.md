@@ -34,7 +34,5 @@ assertMap(Map.of(
     .entry("element", 3)
     .entry("sub", matchesMap()
       .entry("a", 1)
-      .entry("b", both(greaterThan(1)).and(lessThan(3)))
-    )
-  );
+      .entry("b", both(greaterThan(1)).and(lessThan(3)))));
 ```

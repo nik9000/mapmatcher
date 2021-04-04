@@ -2,6 +2,7 @@
  * Copyright 2021 Nikolas Everett
  * SPDX-License-Identifier: Apache-2.0
  */
+
 package com.github.nik9000.mapmatcher;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -32,22 +33,24 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
   }
 
   /**
-   * Assert match. Shorter output on failure than {@link MatcherAssert#assertThat(Object, Matcher)}
-   * that looks better for {@link MapMatcher} and {@link ListMatcher}.
+   * Assert match. Shorter output on failure than
+   * {@link MatcherAssert#assertThat(Object, Matcher)} that looks better for
+   * {@link MapMatcher} and {@link ListMatcher}.
    */
   public static <T> void assertMap(T actual, Matcher<? super T> matcher) {
     assertMap("", actual, matcher);
   }
 
   /**
-   * Assert match. Shorter output on failure than {@link MatcherAssert#assertThat(Object, Matcher)}
-   * that looks better for {@link MapMatcher} and {@link ListMatcher}.
+   * Assert match. Shorter output on failure than
+   * {@link MatcherAssert#assertThat(Object, Matcher)} that looks better for
+   * {@link MapMatcher} and {@link ListMatcher}.
    */
   public static <T> void assertMap(String reason, T actual, Matcher<? super T> matcher) {
     if (matcher.matches(actual)) {
       return;
     }
-    
+
     Description description = new StringDescription();
     description.appendText(reason).appendText("Expected ");
     matcher.describeMismatch(actual, description);
@@ -86,6 +89,7 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
 
   /**
    * {@inheritDoc}
+   *
    * @hidden
    */
   @Override
@@ -128,7 +132,8 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
     }
   }
 
-  static void describeMatcher(int keyWidth, Object key, Matcher<?> matcher, Description description) {
+  static void describeMatcher(int keyWidth, Object key, Matcher<?> matcher,
+      Description description) {
     String keyFormat = "\n%" + keyWidth + "s";
     description.appendText(String.format(Locale.ROOT, keyFormat, key)).appendText(": ");
     if (matcher instanceof MapMatcher) {
@@ -210,13 +215,16 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
     description.appendValue(value);
   }
 
-  static void describeEntryValue(int keyWidth, Matcher<?> matcher, Object v, Description description) {
+  static void describeEntryValue(int keyWidth, Matcher<?> matcher, Object v,
+      Description description) {
     if (v instanceof Map && matcher instanceof MapMatcher) {
-      ((MapMatcher) matcher).describePotentialMismatch(keyWidth + INDENT, (Map<?, ?>) v, description);
+      ((MapMatcher) matcher)
+          .describePotentialMismatch(keyWidth + INDENT, (Map<?, ?>) v, description);
       return;
     }
     if (v instanceof List && matcher instanceof ListMatcher) {
-      ((ListMatcher) matcher).describePotentialMismatch(keyWidth + INDENT, (List<?>) v, description);
+      ((ListMatcher) matcher)
+          .describePotentialMismatch(keyWidth + INDENT, (List<?>) v, description);
       return;
     }
     if (false == matcher.matches(v)) {
