@@ -4,6 +4,7 @@
  */
 package com.github.nik9000.mapmatcher;
 
+import static com.github.nik9000.mapmatcher.MapMatcher.assertThat;
 import static com.github.nik9000.mapmatcher.MapMatcher.describeEntry;
 import static com.github.nik9000.mapmatcher.MapMatcher.describeEntryMissing;
 import static com.github.nik9000.mapmatcher.MapMatcher.describeEntryUnexepected;
@@ -16,17 +17,38 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Matcher for {@link List Lists} that reports all errors at once.
  */
 public class ListMatcher extends TypeSafeMatcher<List<?>> {
+  /**
+   * Create an empty {@linkplain ListMatcher}.
+   */
   public static ListMatcher matchesList() {
     return new ListMatcher();
+  }
+
+  /**
+   * Assert match. Shorter output on failure than {@link MatcherAssert#assertThat(Object, Matcher)}
+   * that looks better for {@link MapMatcher}.
+   */
+  public static void assertList(Map<?, ?> actual, MapMatcher matcher) {
+    assertList("", actual, matcher);
+  }
+
+  /**
+   * Assert match. Shorter output on failure than {@link MatcherAssert#assertThat(Object, Matcher)}
+   * that looks better for {@link MapMatcher}.
+   */
+  public static void assertList(String reason, Map<?, ?> actual, MapMatcher matcher) {
+    assertThat(reason, actual, matcher);
   }
 
   private final List<Matcher<?>> matchers = new ArrayList<>();
@@ -34,15 +56,29 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
   private ListMatcher() {
   }
 
+  /**
+   * Expect a value.
+   *
+   * @return this for chaining
+   */
   public ListMatcher item(Object value) {
     return item(equalTo(value));
   }
 
+  /**
+   * Expect a {@link Matcher}.
+   *
+   * @return this for chaining
+   */
   public ListMatcher item(Matcher<?> valueMatcher) {
     matchers.add(valueMatcher);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   * @hidden
+   */
   @Override
   public void describeTo(Description description) {
     describeTo(keyWidth(List.of()), description);

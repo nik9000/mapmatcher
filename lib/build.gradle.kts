@@ -34,6 +34,19 @@ tasks.register<Jar>("sourcesJar") {
   classifier = "sources"
 }
 
+tasks.javadoc {
+  val o = options
+  if (o !is StandardJavadocDocletOptions) {
+    throw IllegalArgumentException()
+  }
+  o.docTitle("MapMatcher")
+  o.windowTitle("MapMatcher")
+  o.links!!.add("https://docs.oracle.com/en/java/javase/11/docs/api/")
+  o.links!!.add("http://hamcrest.org/JavaHamcrest/javadoc/2.2/")
+  o.addBooleanOption("Xdoclint:all,-missing", true)
+  o.showFromPublic()
+}
+
 tasks.register<Jar>("javadocJar") {
   from(tasks.javadoc)
   classifier = "javadoc"

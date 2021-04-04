@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.StringDescription;
 import org.hamcrest.TypeSafeMatcher;
 
@@ -23,15 +24,30 @@ import org.hamcrest.TypeSafeMatcher;
 public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
   private static final int INDENT = 2;
 
+  /**
+   * Create an empty {@linkplain MapMatcher}.
+   */
   public static MapMatcher matchesMap() {
     return new MapMatcher();
   }
 
-  public static <T> void assertMap(T actual, Matcher<? super T> matcher) {
+  /**
+   * Assert match. Shorter output on failure than {@link MatcherAssert#assertThat(Object, Matcher)}
+   * that looks better for {@link MapMatcher}.
+   */
+  public static void assertMap(Map<?, ?> actual, MapMatcher matcher) {
     assertMap("", actual, matcher);
   }
 
-  public static <T> void assertMap(String reason, T actual, Matcher<? super T> matcher) {
+  /**
+   * Assert match. Shorter output on failure than {@link MatcherAssert#assertThat(Object, Matcher)}
+   * that looks better for {@link MapMatcher}.
+   */
+  public static void assertMap(String reason, Map<?, ?> actual, MapMatcher matcher) {
+    assertThat(reason, actual, matcher);
+  }
+
+  static <T> void assertThat(String reason, T actual, Matcher<? super T> matcher) {
     if (matcher.matches(actual)) {
       return;
     }
@@ -48,10 +64,20 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
   private MapMatcher() {
   }
 
+  /**
+   * Expect a value.
+   *
+   * @return this for chaining
+   */
   public MapMatcher entry(Object key, Object value) {
     return entry(key, equalTo(value));
   }
 
+  /**
+   * Expect a {@link Matcher}.
+   *
+   * @return this for chaining
+   */
   public MapMatcher entry(Object key, Matcher<?> valueMatcher) {
     Matcher<?> old = matchers.put(key, valueMatcher);
     if (old != null) {
@@ -60,6 +86,10 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   * @hidden
+   */
   @Override
   public void describeTo(Description description) {
     describeTo(keyWidth(Map.of()), description);
