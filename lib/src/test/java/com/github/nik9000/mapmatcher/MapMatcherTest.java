@@ -147,6 +147,13 @@ class MapMatcherTest {
                                             .item(closeTo(40.76345, 0.000005))))))));
   }
 
+  @Test
+  public void immutable() {
+    MapMatcher matcher = matchesMap();
+    assertMap(Map.of("a", "a"), matcher.entry("a", "a"));
+    assertMap(Map.of(), matcher);
+  }
+
   private Map<?, ?> read(String file) throws IOException {
     try (InputStream data = Thread.currentThread().getContextClassLoader().getResourceAsStream(file)) {
       return new Gson().fromJson(new InputStreamReader(data, StandardCharsets.UTF_8), Map.class);

@@ -5,6 +5,7 @@
 package com.github.nik9000.mapmatcher;
 
 import static com.github.nik9000.mapmatcher.ListMatcher.matchesList;
+import static com.github.nik9000.mapmatcher.MapMatcher.assertMap;
 import static com.github.nik9000.mapmatcher.MapMatcher.matchesMap;
 import static com.github.nik9000.mapmatcher.MapMatcherTest.assertDescribeTo;
 import static com.github.nik9000.mapmatcher.MapMatcherTest.assertMismatch;
@@ -87,6 +88,13 @@ class ListMatcherTest {
     mismatch.append("1: <2>");
     assertMismatch(List.of(List.of(2), 2), matchesList().item(matchesList().item(1)).item(2),
         equalTo(mismatch.toString()));
+  }
+
+  @Test
+  public void immutable() {
+    ListMatcher matcher = matchesList();
+    assertMap(List.of("a"), matcher.item("a"));
+    assertMap(List.of(), matcher);
   }
 
   @Test
