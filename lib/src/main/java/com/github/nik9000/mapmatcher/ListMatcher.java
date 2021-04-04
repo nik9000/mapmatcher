@@ -25,6 +25,9 @@ import org.hamcrest.TypeSafeMatcher;
  * Matcher for {@link List Lists} that reports all errors at once.
  */
 public class ListMatcher extends TypeSafeMatcher<List<?>> {
+  /**
+   * Create an empty {@linkplain ListMatcher}.
+   */
   public static ListMatcher matchesList() {
     return new ListMatcher();
   }
@@ -34,15 +37,29 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
   private ListMatcher() {
   }
 
+  /**
+   * Expect a value.
+   *
+   * @return this for chaining
+   */
   public ListMatcher item(Object value) {
     return item(equalTo(value));
   }
 
+  /**
+   * Expect a {@link Matcher}.
+   *
+   * @return this for chaining
+   */
   public ListMatcher item(Matcher<?> valueMatcher) {
     matchers.add(valueMatcher);
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   * @hidden
+   */
   @Override
   public void describeTo(Description description) {
     describeTo(keyWidth(List.of()), description);

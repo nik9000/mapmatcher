@@ -188,7 +188,7 @@ class MapMatcherTest {
         equalTo(description.toString()));
   }
 
-  static <T> void assertMismatch(T v, Matcher<T> matcher, Matcher<String> mismatchDescriptionMatcher) {
+  static <T> void assertMismatch(T v, Matcher<? super T> matcher, Matcher<String> mismatchDescriptionMatcher) {
     assertMap(v, not(matcher));
     StringDescription description = new StringDescription();
     matcher.describeMismatch(v, description);
