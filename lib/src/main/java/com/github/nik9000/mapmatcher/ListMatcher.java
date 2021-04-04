@@ -21,6 +21,9 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+/**
+ * Matcher for {@link List Lists} that reports all errors at once.
+ */
 public class ListMatcher extends TypeSafeMatcher<List<?>> {
   public static ListMatcher matchesList() {
     return new ListMatcher();

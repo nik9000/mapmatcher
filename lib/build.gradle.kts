@@ -28,3 +28,17 @@ license {
   header = rootProject.file("LICENSE_HEADER")
   exclude("*.json")
 }
+
+tasks.register<Jar>("sourcesJar") {
+  from(sourceSets.main.get().getAllJava())
+  classifier = "sources"
+}
+
+tasks.register<Jar>("javadocJar") {
+  from(tasks.javadoc)
+  classifier = "javadoc"
+}
+
+tasks.build {
+  dependsOn(tasks.withType<Jar>())
+}

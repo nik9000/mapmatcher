@@ -17,6 +17,9 @@ import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 import org.hamcrest.TypeSafeMatcher;
 
+/**
+ * Matcher for {@link Map Maps} that reports all errors at once.
+ */
 public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
   private static final int INDENT = 2;
 
