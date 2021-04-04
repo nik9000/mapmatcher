@@ -28,7 +28,7 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
    * Create an empty {@linkplain MapMatcher}.
    */
   public static MapMatcher matchesMap() {
-    return new MapMatcher();
+    return new MapMatcher(Map.of());
   }
 
   /**
@@ -55,15 +55,16 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
     throw new AssertionError(description.toString());
   }
 
-  private final Map<Object, Matcher<?>> matchers = new LinkedHashMap<>();
+  private final Map<Object, Matcher<?>> matchers;
 
-  private MapMatcher() {
+  private MapMatcher(Map<Object, Matcher<?>> matchers) {
+    this.matchers = matchers;
   }
 
   /**
    * Expect a value.
    *
-   * @return this for chaining
+   * @return a new {@link MapMatcher} that expects another entry
    */
   public MapMatcher entry(Object key, Object value) {
     return entry(key, equalTo(value));
@@ -72,14 +73,15 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
   /**
    * Expect a {@link Matcher}.
    *
-   * @return this for chaining
+   * @return a new {@link MapMatcher} that expects another entry
    */
   public MapMatcher entry(Object key, Matcher<?> valueMatcher) {
+    Map<Object, Matcher<?>> matchers = new LinkedHashMap<>(this.matchers);
     Matcher<?> old = matchers.put(key, valueMatcher);
     if (old != null) {
       throw new IllegalArgumentException("Already had an entry for [" + key + "]: " + old);
     }
-    return this;
+    return new MapMatcher(matchers);
   }
 
   /**

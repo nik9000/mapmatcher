@@ -29,18 +29,19 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
    * Create an empty {@linkplain ListMatcher}.
    */
   public static ListMatcher matchesList() {
-    return new ListMatcher();
+    return new ListMatcher(List.of());
   }
 
-  private final List<Matcher<?>> matchers = new ArrayList<>();
+  private final List<Matcher<?>> matchers;
 
-  private ListMatcher() {
+  private ListMatcher(List<Matcher<?>> matchers) {
+    this.matchers = matchers;
   }
 
   /**
    * Expect a value.
    *
-   * @return this for chaining
+   * @return a new {@link ListMatcher} that expects another item
    */
   public ListMatcher item(Object value) {
     return item(equalTo(value));
@@ -49,11 +50,12 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
   /**
    * Expect a {@link Matcher}.
    *
-   * @return this for chaining
+   * @return a new {@link ListMatcher} that expects another item
    */
   public ListMatcher item(Matcher<?> valueMatcher) {
+    List<Matcher<?>> matchers = new ArrayList<>(this.matchers);
     matchers.add(valueMatcher);
-    return this;
+    return new ListMatcher(matchers);
   }
 
   /**
