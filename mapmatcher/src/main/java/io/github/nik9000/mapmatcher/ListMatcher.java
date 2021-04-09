@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.github.nik9000.mapmatcher;
+package io.github.nik9000.mapmatcher;
 
-import static com.github.nik9000.mapmatcher.MapMatcher.describeEntry;
-import static com.github.nik9000.mapmatcher.MapMatcher.describeEntryMissing;
-import static com.github.nik9000.mapmatcher.MapMatcher.describeEntryUnexepected;
-import static com.github.nik9000.mapmatcher.MapMatcher.describeEntryValue;
-import static com.github.nik9000.mapmatcher.MapMatcher.describeMatcher;
-import static com.github.nik9000.mapmatcher.MapMatcher.maxKeyWidthForMatcher;
+import static io.github.nik9000.mapmatcher.MapMatcher.describeEntry;
+import static io.github.nik9000.mapmatcher.MapMatcher.describeEntryMissing;
+import static io.github.nik9000.mapmatcher.MapMatcher.describeEntryUnexepected;
+import static io.github.nik9000.mapmatcher.MapMatcher.describeEntryValue;
+import static io.github.nik9000.mapmatcher.MapMatcher.describeMatcher;
+import static io.github.nik9000.mapmatcher.MapMatcher.maxKeyWidthForMatcher;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.util.ArrayList;

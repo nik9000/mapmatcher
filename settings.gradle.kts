@@ -1,2 +1,2 @@
 rootProject.name = "mapmatcher"
-include("lib")
+include("mapmatcher")
