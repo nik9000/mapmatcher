@@ -2,7 +2,7 @@ import java.net.URI
 
 plugins {
   `java-library`
-  id("com.github.hierynomus.license") version "0.15.0"
+  id("org.cadixdev.licenser") version "0.5.1"
   checkstyle
   `maven-publish`
   signing
@@ -37,7 +37,6 @@ tasks.test {
 
 license {
   header = rootProject.file("LICENSE_HEADER")
-  exclude("*.json")
 }
 
 tasks.javadoc {
