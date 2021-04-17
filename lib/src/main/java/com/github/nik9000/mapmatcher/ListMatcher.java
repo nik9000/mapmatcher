@@ -27,7 +27,7 @@ import org.hamcrest.TypeSafeMatcher;
  */
 public class ListMatcher extends TypeSafeMatcher<List<?>> {
   /**
-   * Create an empty {@linkplain ListMatcher}.
+   * Create a {@linkplain ListMatcher} that matches empty lists.
    */
   public static ListMatcher matchesList() {
     return new ListMatcher(List.of());

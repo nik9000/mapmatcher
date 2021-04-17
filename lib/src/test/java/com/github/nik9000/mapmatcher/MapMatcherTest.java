@@ -77,6 +77,50 @@ class MapMatcherTest {
   }
 
   @Test
+  void extraOk() {
+    assertMap(Map.of("foo", 1), matchesMap().extraOk());
+  }
+
+  @Test
+  void extraOkMismatchSimple() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a map containing\n");
+    mismatch.append("bar: expected <1> but was <missing>\n");
+    mismatch.append("foo: <1> unexpected but ok");
+    assertMismatch(
+      Map.of("foo", 1),
+      matchesMap().entry("bar", 1).extraOk(),
+      equalTo(mismatch.toString())
+    );
+  }
+
+  @Test
+  void extraOkMismatchExtraMap() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a map containing\n");
+    mismatch.append("bar: expected <1> but was <missing>\n");
+    mismatch.append("foo: <{i=1}> unexpected but ok");
+    assertMismatch(
+      Map.of("foo", Map.of("i", 1)),
+      matchesMap().entry("bar", 1).extraOk(),
+      equalTo(mismatch.toString())
+    );
+  }
+
+  @Test
+  void extraOkMismatchExtraList() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a map containing\n");
+    mismatch.append("bar: expected <1> but was <missing>\n");
+    mismatch.append("foo: <[1]> unexpected but ok");
+    assertMismatch(
+      Map.of("foo", List.of(1)),
+      matchesMap().entry("bar", 1).extraOk(),
+      equalTo(mismatch.toString())
+    );
+  }
+
+  @Test
   void manyWrongSimpleValue() {
     StringBuilder mismatch = new StringBuilder();
     mismatch.append("a map containing\n");

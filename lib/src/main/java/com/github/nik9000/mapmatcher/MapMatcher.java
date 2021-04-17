@@ -26,10 +26,10 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
   private static final int INDENT = 2;
 
   /**
-   * Create an empty {@linkplain MapMatcher}.
+   * Create a {@linkplain MapMatcher} that matches empty {@link Map}s.
    */
   public static MapMatcher matchesMap() {
-    return new MapMatcher(Map.of());
+    return new MapMatcher(Map.of(), false);
   }
 
   /**
@@ -60,8 +60,20 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
 
   private final Map<Object, Matcher<?>> matchers;
 
-  private MapMatcher(Map<Object, Matcher<?>> matchers) {
+  private final boolean extraOk;
+
+  private MapMatcher(Map<Object, Matcher<?>> matchers, boolean extraOk) {
     this.matchers = matchers;
+    this.extraOk = extraOk;
+  }
+
+  /**
+   * Ignore extra entries.
+   *
+   * @return a new {@link MapMatcher} that will not fail if it encounters extra entries
+   */
+  public MapMatcher extraOk() {
+    return new MapMatcher(matchers, true);
   }
 
   /**
@@ -84,7 +96,7 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
     if (old != null) {
       throw new IllegalArgumentException("Already had an entry for [" + key + "]: " + old);
     }
-    return new MapMatcher(matchers);
+    return new MapMatcher(matchers, extraOk);
   }
 
   /**
@@ -149,11 +161,14 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
 
   @Override
   protected boolean matchesSafely(Map<?, ?> item) {
-    if (item.size() != matchers.size()) {
-      return false;
-    }
-    if (false == item.keySet().equals(matchers.keySet())) {
-      return false;
+    if (extraOk) {
+      if (false == item.keySet().containsAll(matchers.keySet())) {
+        return false;
+      }
+    } else {
+      if (false == item.keySet().equals(matchers.keySet())) {
+        return false;
+      }
     }
     for (Map.Entry<Object, Matcher<?>> e : matchers.entrySet()) {
       if (false == item.containsKey(e.getKey())) {
@@ -195,7 +210,11 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
     for (Map.Entry<?, ?> e : item.entrySet()) {
       if (false == matchers.containsKey(e.getKey())) {
         describeEntry(keyWidth, String.format(Locale.ROOT, keyFormat, e.getKey()), description);
-        describeEntryUnexepected(e.getValue(), description);
+        if (extraOk) {
+          describeEntryUnexepectedButOk(e.getValue(), description);
+        } else {
+          describeEntryUnexepected(e.getValue(), description);
+        }
       }
     }
   }
@@ -213,6 +232,11 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
   static void describeEntryUnexepected(Object value, Description description) {
     description.appendText("<unexpected> but was ");
     description.appendValue(value);
+  }
+
+  static void describeEntryUnexepectedButOk(Object value, Description description) {
+    description.appendValue(value);
+    description.appendText(" unexpected but ok");
   }
 
   static void describeEntryValue(int keyWidth, Matcher<?> matcher, Object v,
