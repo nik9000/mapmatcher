@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.github.nik9000.mapmatcher;
+package io.github.nik9000.mapmatcher;
 
-import static com.github.nik9000.mapmatcher.ListMatcher.matchesList;
-import static com.github.nik9000.mapmatcher.MapMatcher.assertMap;
-import static com.github.nik9000.mapmatcher.MapMatcher.matchesMap;
+import static io.github.nik9000.mapmatcher.ListMatcher.matchesList;
+import static io.github.nik9000.mapmatcher.MapMatcher.assertMap;
+import static io.github.nik9000.mapmatcher.MapMatcher.matchesMap;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.equalTo;
