@@ -14,7 +14,7 @@ val isReleaseVersion = false == version.toString().endsWith("SNAPSHOT")
 
 java {
   toolchain {
-    languageVersion.set(JavaLanguageVersion.of(11))
+    languageVersion.set(JavaLanguageVersion.of(8))
   }
   withJavadocJar()
   withSourcesJar()
@@ -31,8 +31,17 @@ dependencies {
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
-tasks.test {
+tasks.compileTestJava {
+  javaCompiler.set(javaToolchains.compilerFor {
+    languageVersion.set(JavaLanguageVersion.of(16))
+  })
+}
+
+tasks.withType<Test>().configureEach {
   useJUnitPlatform()
+  javaLauncher.set(javaToolchains.launcherFor {
+    languageVersion.set(JavaLanguageVersion.of(16))
+  })
 }
 
 license {
