@@ -5,6 +5,8 @@
 
 package io.github.nik9000.mapmatcher;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.util.LinkedHashMap;
@@ -29,7 +31,7 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
    * Create a {@linkplain MapMatcher} that matches empty {@link Map}s.
    */
   public static MapMatcher matchesMap() {
-    return new MapMatcher(Map.of(), false);
+    return new MapMatcher(emptyMap(), false);
   }
 
   /**
@@ -106,7 +108,7 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
    */
   @Override
   public void describeTo(Description description) {
-    describeTo(keyWidth(Map.of()), description);
+    describeTo(keyWidth(emptyMap()), description);
   }
 
   int keyWidth(Map<?, ?> item) {
@@ -123,11 +125,11 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
 
   static int maxKeyWidthForMatcher(Object item, Matcher<?> matcher) {
     if (matcher instanceof MapMatcher) {
-      Map<?, ?> longestSubMap = item instanceof Map ? (Map<?, ?>) item : Map.of();
+      Map<?, ?> longestSubMap = item instanceof Map ? (Map<?, ?>) item : emptyMap();
       return ((MapMatcher) matcher).keyWidth(longestSubMap) - INDENT;
     }
     if (matcher instanceof ListMatcher) {
-      List<?> longestSubList = item instanceof List ? (List<?>) item : List.of();
+      List<?> longestSubList = item instanceof List ? (List<?>) item : emptyList();
       return ((ListMatcher) matcher).keyWidth(longestSubList) - INDENT;
     }
     return 0;

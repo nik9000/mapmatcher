@@ -5,6 +5,7 @@
 
 package io.github.nik9000.mapmatcher;
 
+import static java.util.Collections.emptyList;
 import static io.github.nik9000.mapmatcher.MapMatcher.describeEntry;
 import static io.github.nik9000.mapmatcher.MapMatcher.describeEntryMissing;
 import static io.github.nik9000.mapmatcher.MapMatcher.describeEntryUnexepected;
@@ -30,7 +31,7 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
    * Create a {@linkplain ListMatcher} that matches empty lists.
    */
   public static ListMatcher matchesList() {
-    return new ListMatcher(List.of());
+    return new ListMatcher(emptyList());
   }
 
   private final List<Matcher<?>> matchers;
@@ -66,7 +67,7 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
    */
   @Override
   public void describeTo(Description description) {
-    describeTo(keyWidth(List.of()), description);
+    describeTo(keyWidth(emptyList()), description);
   }
 
   int keyWidth(List<?> item) {
