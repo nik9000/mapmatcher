@@ -10,9 +10,11 @@ import static io.github.nik9000.mapmatcher.MapMatcher.assertMap;
 import static io.github.nik9000.mapmatcher.MapMatcher.matchesMap;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.both;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.notNullValue;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +31,7 @@ import org.junit.jupiter.api.Test;
  */
 public class DocTest {
   @Test
-  public void codeMatches() throws IOException {
+  void codeMatches() throws IOException {
     String path = DocTest.class.getName().replace('.', File.separatorChar);
     String file = Files.readString(Path.of("src/test/java/" + path + ".java"),
         StandardCharsets.UTF_8);
@@ -44,21 +46,36 @@ public class DocTest {
   }
 
   @Test
-  public void explicitExample() throws IOException {
+  void maven() throws IOException {
+    assertThat(readmeChunk("maven"), containsString("<version>" + lastRelease() + "</version>\n"));
+  }
+
+  @Test
+  void gradle() throws IOException {
+    assertThat(readmeChunk("gradle"),
+      equalTo("testImplementation 'io.github.nik9000:mapmatcher:" + lastRelease() + "'"));
+  }
+
+  @Test
+  void explicitExample() throws IOException {
     try {
       // @formatter:off
       // CODESTART
       assertMap(Map.of(
+          "foo", 2,
+          "bar", 2,
+          "baz", 2,
           "list", List.of(2, 3, 4),
-          "element", 2,
           "sub", Map.of(
             "a", 1,
             "b", 2
           )
         ),
         matchesMap()
-          .entry("list", matchesList().item(2).item(3).item(5).item(6))
-          .entry("element", 3)
+          .entry("foo", 2)
+          .entry("bar", 3)
+          .entry("baz", greaterThan(1))
+          .entry("list", List.of(2, greaterThan(2), 5, 6))
           .entry("sub", matchesMap()
             .entry("a", 1)
             .entry("b", both(greaterThan(1)).and(lessThan(3)))));
@@ -82,5 +99,19 @@ public class DocTest {
       throw new IllegalArgumentException("Chunk [" + name + "] doesn't end");
     }
     return file.substring(start, end - 1);
+  }
+
+  private String lastRelease() {
+    String version = System.getenv("version");
+    assertThat("gradle will set this", version, notNullValue());
+    if (false == version.endsWith("-SNAPSHOT")) {
+      return version;
+    }
+    version = version.substring(0, version.length() - "-SNAPSHOT".length());
+    int start = version.lastIndexOf(".") + 1;
+    int end = version.length();
+    String last = version.substring(start, end);
+    int next = Integer.parseInt(last) - 1;
+    return version.substring(0, start) + next;
   }
 }
