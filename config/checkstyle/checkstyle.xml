@@ -15,5 +15,10 @@
   <module name="TreeWalker">
     <module name="OuterTypeFilename" />
     <module name="EmptyLineSeparator" />
+    <module name="Regexp">
+      <property name="format" value="[ \t]+$"/>
+      <property name="illegalPattern" value="true"/>
+      <property name="message" value="Trailing whitespace"/>
+    </module>
   </module>
 </module>

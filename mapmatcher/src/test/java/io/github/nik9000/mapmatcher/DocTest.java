@@ -44,7 +44,7 @@ public class DocTest {
   }
 
   @Test
-  public void errorMessageMatches() throws IOException {
+  public void explicitExample() throws IOException {
     try {
       // @formatter:off
       // CODESTART

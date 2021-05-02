@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 
 import org.hamcrest.Description;
@@ -32,6 +33,23 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
    */
   public static MapMatcher matchesMap() {
     return new MapMatcher(emptyMap(), false);
+  }
+
+  /**
+   * Create a {@linkplain MapMatcher} that matches a {@link Map}.
+   * <p>The description and mismatch message are sorted as {@link Map#entrySet}
+   * because error messages with a consistent order are easier to debug.
+   * So you should care about this order and provide {@link LinkedHashMap} or a
+   * {@link TreeMap} or some other {@link Map} that has a nice order. Or build
+   * an empty matcher with {@link #matchesMap()} and fill it in the order you
+   * like by calling {@link #entry entry}.
+   */
+  public static MapMatcher matchesMap(Map<?, ?> map) {
+    MapMatcher matcher = matchesMap();
+    for (Map.Entry e : map.entrySet()) {
+      matcher = matcher.entry(e.getKey(), e.getValue());
+    }
+    return matcher;
   }
 
   /**
@@ -80,11 +98,14 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
 
   /**
    * Expect a value.
+   * <p>
+   * Passing a {@link Matcher} to this method will function as though you
+   * passed it directly to {@link #entry(Object, Matcher)}.
    *
    * @return a new {@link MapMatcher} that expects another entry
    */
   public MapMatcher entry(Object key, Object value) {
-    return entry(key, equalTo(value));
+    return entry(key, matcherFor(value));
   }
 
   /**
@@ -219,6 +240,23 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
         }
       }
     }
+  }
+
+  /**
+   * Converts an unknown {@link Object} to an equality {@link Matcher}
+   * for the public API methods that take {@linkplain Object}.
+   */
+  static Matcher<?> matcherFor(Object value) {
+    if (value instanceof List) {
+      return ListMatcher.matchesList((List<?>) value);
+    }
+    if (value instanceof Map) {
+      return matchesMap((Map<?, ?>) value);
+    }
+    if (value instanceof Matcher) {
+      return (Matcher<?>) value;
+    }
+    return equalTo(value);
   }
 
   static void describeEntry(int keyWidth, Object key, Description description) {

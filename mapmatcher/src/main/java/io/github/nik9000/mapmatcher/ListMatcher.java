@@ -11,8 +11,8 @@ import static io.github.nik9000.mapmatcher.MapMatcher.describeEntryMissing;
 import static io.github.nik9000.mapmatcher.MapMatcher.describeEntryUnexepected;
 import static io.github.nik9000.mapmatcher.MapMatcher.describeEntryValue;
 import static io.github.nik9000.mapmatcher.MapMatcher.describeMatcher;
+import static io.github.nik9000.mapmatcher.MapMatcher.matcherFor;
 import static io.github.nik9000.mapmatcher.MapMatcher.maxKeyWidthForMatcher;
-import static org.hamcrest.Matchers.equalTo;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,6 +34,17 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
     return new ListMatcher(emptyList());
   }
 
+  /**
+   * Create a {@linkplain ListMatcher} that matches a list.
+   */
+  public static ListMatcher matchesList(List<?> list) {
+    ListMatcher matcher = matchesList();
+    for (Object item : list) {
+      matcher = matcher.item(item);
+    }
+    return matcher;
+  }
+
   private final List<Matcher<?>> matchers;
 
   private ListMatcher(List<Matcher<?>> matchers) {
@@ -42,17 +53,22 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
 
   /**
    * Expect a value.
+   * <p>
+   * Passing a {@link Matcher} to this method will function as though you
+   * passed it directly to {@link #item(Matcher)}.
    *
-   * @return a new {@link ListMatcher} that expects another item
+   * @return a new {@link ListMatcher} that expects all items this matcher
+   *         expected followed by the provided item
    */
   public ListMatcher item(Object value) {
-    return item(equalTo(value));
+    return item(matcherFor(value));
   }
 
   /**
    * Expect a {@link Matcher}.
    *
-   * @return a new {@link ListMatcher} that expects another item
+   * @return a new {@link ListMatcher} that expects all items this matcher
+   *         expected followed by the provided item
    */
   public ListMatcher item(Matcher<?> valueMatcher) {
     List<Matcher<?>> matchers = new ArrayList<>(this.matchers);

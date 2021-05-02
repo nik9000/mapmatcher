@@ -140,6 +140,18 @@ class MapMatcherTest {
     mismatch.append("  bar: expected <1> but was <2>\n");
     mismatch.append("baz: <2>");
     assertMismatch(Map.of("foo", Map.of("bar", 2), "baz", 2),
+        matchesMap().entry("foo", Map.of("bar", 1)).entry("baz", 2),
+        equalTo(mismatch.toString()));
+  }
+
+  @Test
+  void subMapMatcher() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a map containing\n");
+    mismatch.append("foo: a map containing\n");
+    mismatch.append("  bar: expected <1> but was <2>\n");
+    mismatch.append("baz: <2>");
+    assertMismatch(Map.of("foo", Map.of("bar", 2), "baz", 2),
         matchesMap().entry("foo", matchesMap().entry("bar", 1)).entry("baz", 2),
         equalTo(mismatch.toString()));
   }
@@ -152,7 +164,67 @@ class MapMatcherTest {
     mismatch.append("    0: expected <1> but was <2>\n");
     mismatch.append("bar: <2>");
     assertMismatch(Map.of("foo", List.of(2), "bar", 2),
+        matchesMap().entry("foo", List.of(1)).entry("bar", 2),
+        equalTo(mismatch.toString()));
+  }
+
+  @Test
+  void subListMatcher() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a map containing\n");
+    mismatch.append("foo: a list containing\n");
+    mismatch.append("    0: expected <1> but was <2>\n");
+    mismatch.append("bar: <2>");
+    assertMismatch(Map.of("foo", List.of(2), "bar", 2),
         matchesMap().entry("foo", matchesList().item(1)).entry("bar", 2),
+        equalTo(mismatch.toString()));
+  }
+
+  @Test
+  void subMatcher() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a map containing\n");
+    mismatch.append("foo: expected a numeric value within <0.5> of <1.0> but ");
+    mismatch.append("<2.0> differed by <0.5> more than delta <0.5>\n");
+    mismatch.append("bar: <2>");
+    assertMismatch(Map.of("foo", 2.0, "bar", 2),
+        matchesMap().entry("foo", closeTo(1.0, .5)).entry("bar", 2),
+        equalTo(mismatch.toString()));
+  }
+
+  @Test
+  void subMatcherAsValue() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a map containing\n");
+    mismatch.append("foo: expected a numeric value within <0.5> of <1.0> but ");
+    mismatch.append("<2.0> differed by <0.5> more than delta <0.5>\n");
+    mismatch.append("bar: <2>");
+    Object foo = closeTo(1.0, .5);
+    assertMismatch(Map.of("foo", 2.0, "bar", 2),
+        matchesMap().entry("foo", foo).entry("bar", 2),
+        equalTo(mismatch.toString()));
+  }
+
+  @Test
+  void provideMap() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a map containing\n");
+    mismatch.append("foo: a list containing\n");
+    mismatch.append("    0: expected <1> but was <2>\n");
+    mismatch.append("bar: a map containing\n");
+    mismatch.append("    a: <2>\n");
+    mismatch.append("baz: expected a numeric value within <0.5> of <1.0> but ");
+    mismatch.append("<2.0> differed by <0.5> more than delta <0.5>");
+    /*
+     * Iteration order of the specification map gives the order of the
+     * error message so we use a LinkedHashMap to preserve our order.
+     */
+    Map<String, Object> spec = new LinkedHashMap<>();
+    spec.put("foo", List.of(1));
+    spec.put("bar", Map.of("a", 2));
+    spec.put("baz", closeTo(1.0, 0.5));
+    assertMismatch(Map.of("foo", List.of(2), "bar", Map.of("a", 2), "baz", 2.0),
+        matchesMap(spec),
         equalTo(mismatch.toString()));
   }
 
