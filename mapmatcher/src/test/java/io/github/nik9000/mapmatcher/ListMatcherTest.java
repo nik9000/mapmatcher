@@ -11,6 +11,7 @@ import static io.github.nik9000.mapmatcher.MapMatcher.matchesMap;
 import static io.github.nik9000.mapmatcher.MapMatcherTest.assertDescribeTo;
 import static io.github.nik9000.mapmatcher.MapMatcherTest.assertMismatch;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.util.List;
@@ -79,6 +80,18 @@ class ListMatcherTest {
     mismatch.append("bar: expected <1> but was <2>\n");
     mismatch.append("1: <2>");
     assertMismatch(List.of(Map.of("bar", 2), 2),
+        matchesList().item(Map.of("bar", 1)).item(2),
+        equalTo(mismatch.toString()));
+  }
+
+  @Test
+  void subMapMatcher() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a list containing\n");
+    mismatch.append("0: a map containing\n");
+    mismatch.append("bar: expected <1> but was <2>\n");
+    mismatch.append("1: <2>");
+    assertMismatch(List.of(Map.of("bar", 2), 2),
         matchesList().item(matchesMap().entry("bar", 1)).item(2),
         equalTo(mismatch.toString()));
   }
@@ -91,7 +104,62 @@ class ListMatcherTest {
     mismatch.append("  0: expected <1> but was <2>\n");
     mismatch.append("1: <2>");
     assertMismatch(List.of(List.of(2), 2),
+        matchesList().item(List.of(1)).item(2),
+        equalTo(mismatch.toString()));
+  }
+
+  @Test
+  void subListMatcher() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a list containing\n");
+    mismatch.append("0: a list containing\n");
+    mismatch.append("  0: expected <1> but was <2>\n");
+    mismatch.append("1: <2>");
+    assertMismatch(List.of(List.of(2), 2),
         matchesList().item(matchesList().item(1)).item(2),
+        equalTo(mismatch.toString()));
+  }
+
+
+  @Test
+  void subMatcher() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a list containing\n");
+    mismatch.append("0: expected a numeric value within <0.5> of <1.0> but");
+    mismatch.append(" <2.0> differed by <0.5> more than delta <0.5>\n");
+    mismatch.append("1: <2>");
+    assertMismatch(List.of(2.0, 2),
+        matchesList().item(closeTo(1.0, 0.5)).item(2),
+        equalTo(mismatch.toString()));
+  }
+
+  @Test
+  void subMatcherAsValue() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a list containing\n");
+    mismatch.append("0: expected a numeric value within <0.5> of <1.0> but");
+    mismatch.append(" <2.0> differed by <0.5> more than delta <0.5>\n");
+    mismatch.append("1: <2>");
+    Object item0 = closeTo(1.0, 0.5);
+    assertMismatch(List.of(2.0, 2),
+        matchesList().item(item0).item(2),
+        equalTo(mismatch.toString()));
+  }
+
+  @Test
+  void provideList() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a list containing\n");
+    mismatch.append("0: a list containing\n");
+    mismatch.append("  0: <1>\n");
+    mismatch.append("1: a map containing\n");
+    mismatch.append("bar: expected <1> but was <2>\n");
+    mismatch.append("2: expected a numeric value within <0.5> of <1.0> but");
+    mismatch.append(" <2.0> differed by <0.5> more than delta <0.5>");
+
+    Object item0 = closeTo(1.0, 0.5);
+    assertMismatch(List.of(List.of(1), Map.of("bar", 2), 2.0),
+        matchesList(List.of(List.of(1), Map.of("bar", 1), closeTo(1.0, 0.5))),
         equalTo(mismatch.toString()));
   }
 
