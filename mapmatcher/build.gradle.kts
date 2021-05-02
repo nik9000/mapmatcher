@@ -38,6 +38,7 @@ tasks.compileTestJava {
 }
 
 tasks.withType<Test>().configureEach {
+  environment("version", version)
   useJUnitPlatform()
   javaLauncher.set(javaToolchains.launcherFor {
     languageVersion.set(JavaLanguageVersion.of(16))
