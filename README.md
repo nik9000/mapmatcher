@@ -49,7 +49,7 @@ Use it in maven with something like:
 <dependency>
   <groupId>io.github.nik9000</groupId>
   <artifactId>mapmatcher</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   <scope>test</scope>
 </dependency>
 ```
@@ -57,5 +57,5 @@ Use it in maven with something like:
 Or use it in gradle with something like:
 <a name="gradle"></a>
 ```
-testImplementation 'io.github.nik9000:mapmatcher:0.0.1'
+testImplementation 'io.github.nik9000:mapmatcher:0.0.2'
 ```
