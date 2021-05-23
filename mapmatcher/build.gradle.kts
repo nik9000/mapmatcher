@@ -3,7 +3,7 @@ import java.net.URI
 plugins {
   `java-library`
   id("org.cadixdev.licenser") version "0.5.1"
-  checkstyle
+  id("ru.vyarus.quality") version "4.6.0"
   `maven-publish`
   signing
 }
@@ -31,10 +31,6 @@ dependencies {
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.0-M1")
 }
 
-tasks.withType<JavaCompile>().configureEach {
-  options.compilerArgs.add("-Xlint:all")
-}
-
 tasks.compileTestJava {
   javaCompiler.set(javaToolchains.compilerFor {
     languageVersion.set(JavaLanguageVersion.of(16))
@@ -47,6 +43,10 @@ tasks.withType<Test>().configureEach {
   javaLauncher.set(javaToolchains.launcherFor {
     languageVersion.set(JavaLanguageVersion.of(16))
   })
+}
+
+quality {
+  lintOptions = listOf("all")
 }
 
 license {
