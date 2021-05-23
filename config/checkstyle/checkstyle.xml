@@ -16,9 +16,14 @@
     <module name="OuterTypeFilename" />
     <module name="EmptyLineSeparator" />
     <module name="Regexp">
-      <property name="format" value="[ \t]+$"/>
-      <property name="illegalPattern" value="true"/>
-      <property name="message" value="Trailing whitespace"/>
+      <property name="format" value="[ \t]+$" />
+      <property name="illegalPattern" value="true" />
+      <property name="message" value="Trailing whitespace" />
     </module>
+
+    <module name="AvoidStarImport" />
+    <module name="IllegalImport" />
+    <module name="RedundantImport" />
+    <module name="UnusedImports" />
   </module>
 </module>

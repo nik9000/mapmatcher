@@ -31,6 +31,10 @@ dependencies {
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.0-M1")
 }
 
+tasks.withType<JavaCompile>().configureEach {
+  options.compilerArgs.add("-Xlint:all")
+}
+
 tasks.compileTestJava {
   javaCompiler.set(javaToolchains.compilerFor {
     languageVersion.set(JavaLanguageVersion.of(16))
