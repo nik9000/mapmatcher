@@ -4,4 +4,23 @@
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
   <rule ref="category/java/bestpractices.xml/UnusedLocalVariable" />
+  <rule name="LongLogicalNot"
+      language="java"
+      message="Use `false ==`"
+      class="net.sourceforge.pmd.lang.rule.XPathRule" >
+    <description>
+      Prefer `false ==` over `!` because its easier to read.
+    </description>
+    <priority>5</priority>
+    <properties>
+      <property name="xpath">
+        <value>
+<![CDATA[
+//UnaryExpressionNotPlusMinus[@Operator="!"]
+]]>
+        </value>
+      </property>
+    </properties>
+</rule>
+
 </ruleset>
