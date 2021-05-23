@@ -157,7 +157,6 @@ class ListMatcherTest {
     mismatch.append("2: expected a numeric value within <0.5> of <1.0> but");
     mismatch.append(" <2.0> differed by <0.5> more than delta <0.5>");
 
-    Object item0 = closeTo(1.0, 0.5);
     assertMismatch(List.of(List.of(1), Map.of("bar", 2), 2.0),
         matchesList(List.of(List.of(1), Map.of("bar", 1), closeTo(1.0, 0.5))),
         equalTo(mismatch.toString()));

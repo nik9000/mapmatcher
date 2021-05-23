@@ -46,7 +46,7 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
    */
   public static MapMatcher matchesMap(Map<?, ?> map) {
     MapMatcher matcher = matchesMap();
-    for (Map.Entry e : map.entrySet()) {
+    for (Map.Entry<?, ?> e : map.entrySet()) {
       matcher = matcher.entry(e.getKey(), e.getValue());
     }
     return matcher;
