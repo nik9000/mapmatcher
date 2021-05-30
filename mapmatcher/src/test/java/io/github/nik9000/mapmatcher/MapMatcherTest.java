@@ -157,6 +157,18 @@ class MapMatcherTest {
   }
 
   @Test
+  void subEmptyMap() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a map containing\n");
+    mismatch.append("foo: an empty map\n");
+    mismatch.append("  bar: <unexpected> but was <2>\n");
+    mismatch.append("baz: <2>");
+    assertMismatch(Map.of("foo", Map.of("bar", 2), "baz", 2),
+        matchesMap().entry("foo", Map.of()).entry("baz", 2),
+        equalTo(mismatch.toString()));
+  }
+
+  @Test
   void subList() {
     StringBuilder mismatch = new StringBuilder();
     mismatch.append("a map containing\n");
@@ -177,6 +189,18 @@ class MapMatcherTest {
     mismatch.append("bar: <2>");
     assertMismatch(Map.of("foo", List.of(2), "bar", 2),
         matchesMap().entry("foo", matchesList().item(1)).entry("bar", 2),
+        equalTo(mismatch.toString()));
+  }
+
+  @Test
+  void subEmptyList() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a map containing\n");
+    mismatch.append("foo: an empty list\n");
+    mismatch.append("    0: <unexpected> but was <2>\n");
+    mismatch.append("bar: <2>");
+    assertMismatch(Map.of("foo", List.of(2), "bar", 2),
+        matchesMap().entry("foo", List.of()).entry("bar", 2),
         equalTo(mismatch.toString()));
   }
 

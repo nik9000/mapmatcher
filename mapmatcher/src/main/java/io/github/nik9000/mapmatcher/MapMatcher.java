@@ -157,11 +157,7 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
   }
 
   void describeTo(int keyWidth, Description description) {
-    if (matchers.isEmpty()) {
-      description.appendText("an empty map");
-      return;
-    }
-    description.appendText("a map containing");
+    description.appendText(matchers.isEmpty() ? "an empty map" : "a map containing");
     for (Map.Entry<?, Matcher<?>> e : matchers.entrySet()) {
       describeMatcher(keyWidth, e.getKey(), e.getValue(), description);
     }
@@ -211,11 +207,7 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
   }
 
   void describePotentialMismatch(int keyWidth, Map<?, ?> item, Description description) {
-    if (matchers.isEmpty()) {
-      description.appendText("an empty map");
-      return;
-    }
-    description.appendText("a map containing");
+    description.appendText(matchers.isEmpty() ? "an empty map" : "a map containing");
     int maxKeyWidth = Stream.concat(matchers.keySet().stream(), item.keySet().stream())
         .mapToInt(k -> k.toString().length())
         .max()

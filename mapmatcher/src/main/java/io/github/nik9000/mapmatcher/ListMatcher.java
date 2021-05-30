@@ -98,11 +98,7 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
   }
 
   void describeTo(int keyWidth, Description description) {
-    if (matchers.isEmpty()) {
-      description.appendText("an empty list");
-      return;
-    }
-    description.appendText("a list containing");
+    description.appendText(matchers.isEmpty() ? "an empty list" : "a list containing");
     int index = 0;
     for (Matcher<?> matcher : matchers) {
       describeMatcher(keyWidth, index++, matcher, description);
@@ -130,11 +126,7 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
   }
 
   void describePotentialMismatch(int keyWidth, List<?> item, Description description) {
-    if (matchers.isEmpty()) {
-      description.appendText("an empty list");
-      return;
-    }
-    description.appendText("a list containing");
+    description.appendText(matchers.isEmpty() ? "an empty list" : "a list containing");
     int maxKeyWidth = Integer.toString(Math.max(item.size(), matchers.size())).length();
     String keyFormat = "%" + maxKeyWidth + "s";
 
