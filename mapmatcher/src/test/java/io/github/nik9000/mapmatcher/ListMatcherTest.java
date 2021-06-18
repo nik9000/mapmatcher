@@ -8,6 +8,8 @@ package io.github.nik9000.mapmatcher;
 import static io.github.nik9000.mapmatcher.ListMatcher.matchesList;
 import static io.github.nik9000.mapmatcher.MapMatcher.assertMap;
 import static io.github.nik9000.mapmatcher.MapMatcher.matchesMap;
+import static io.github.nik9000.mapmatcher.MapMatcherTest.SUBMATCHER;
+import static io.github.nik9000.mapmatcher.MapMatcherTest.SUBMATCHER_ERR;
 import static io.github.nik9000.mapmatcher.MapMatcherTest.assertDescribeTo;
 import static io.github.nik9000.mapmatcher.MapMatcherTest.assertMismatch;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,6 +19,7 @@ import static org.hamcrest.Matchers.equalTo;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class ListMatcherTest {
@@ -26,19 +29,24 @@ class ListMatcherTest {
   }
 
   @Test
+  @Disabled("just identified")
+  void emptyMismatch() {
+    assertMismatch(List.of(1), matchesList(), equalTo(""));
+  }
+
+  @Test
   void missing() {
-    StringBuilder mismatch = new StringBuilder();
-    mismatch.append("a list containing\n");
-    mismatch.append("0: expected \"foo\" but was <missing>");
-    assertMismatch(List.of(), matchesList().item("foo"), equalTo(mismatch.toString()));
+    assertMismatch(List.of(), matchesList().item("foo"), equalTo("""
+        a list containing
+        0: expected "foo" but was <missing>"""));
   }
 
   @Test
   void wrongSimpleValue() {
-    StringBuilder mismatch = new StringBuilder();
-    mismatch.append("a list containing\n");
-    mismatch.append("0: expected \"bar\" but was \"foo\"");
-    assertMismatch(List.of("foo"), matchesList().item("bar"), equalTo(mismatch.toString()));
+    assertMismatch(List.of("foo"), matchesList().item("bar"), equalTo("""
+        a list containing
+        0: expected "bar" but was "foo"
+        """.strip()));
   }
 
   @Test
@@ -52,114 +60,89 @@ class ListMatcherTest {
 
   @Test
   void manyExtra() {
-    StringBuilder mismatch = new StringBuilder();
-    mismatch.append("a list containing\n");
-    mismatch.append("0: <1>\n");
-    mismatch.append("1: <unexpected> but was <2>\n");
-    mismatch.append("2: <unexpected> but was <3>");
-    assertMismatch(List.of(1, 2, 3), matchesList().item(1), equalTo(mismatch.toString()));
+    assertMismatch(List.of(1, 2, 3), matchesList().item(1), equalTo("""
+        a list containing
+        0: <1>
+        1: <unexpected> but was <2>
+        2: <unexpected> but was <3>"""));
   }
 
   @Test
   void manyWrongSimpleValue() {
-    StringBuilder mismatch = new StringBuilder();
-    mismatch.append("a list containing\n");
-    mismatch.append("0: expected <1> but was <5>\n");
-    mismatch.append("1: <6>\n");
-    mismatch.append("2: expected <10> but was <7>");
-    assertMismatch(List.of(5, 6, 7),
-        matchesList().item(1).item(6).item(10),
-        equalTo(mismatch.toString()));
+    assertMismatch(List.of(5, 6, 7), matchesList().item(1).item(6).item(10), equalTo("""
+        a list containing
+        0: expected <1> but was <5>
+        1: <6>
+        2: expected <10> but was <7>"""));
   }
 
   @Test
   void subMap() {
-    StringBuilder mismatch = new StringBuilder();
-    mismatch.append("a list containing\n");
-    mismatch.append("0: a map containing\n");
-    mismatch.append("bar: expected <1> but was <2>\n");
-    mismatch.append("1: <2>");
-    assertMismatch(List.of(Map.of("bar", 2), 2),
-        matchesList().item(Map.of("bar", 1)).item(2),
-        equalTo(mismatch.toString()));
+    assertMismatch(List.of(Map.of("bar", 2), 2), matchesList().item(Map.of("bar", 1)).item(2),
+        equalTo("""
+            a list containing
+            0: a map containing
+            bar: expected <1> but was <2>
+            1: <2>"""));
   }
 
   @Test
   void subMapMatcher() {
-    StringBuilder mismatch = new StringBuilder();
-    mismatch.append("a list containing\n");
-    mismatch.append("0: a map containing\n");
-    mismatch.append("bar: expected <1> but was <2>\n");
-    mismatch.append("1: <2>");
     assertMismatch(List.of(Map.of("bar", 2), 2),
-        matchesList().item(matchesMap().entry("bar", 1)).item(2),
-        equalTo(mismatch.toString()));
+        matchesList().item(matchesMap().entry("bar", 1)).item(2), equalTo("""
+            a list containing
+            0: a map containing
+            bar: expected <1> but was <2>
+            1: <2>"""));
   }
 
   @Test
   void subList() {
-    StringBuilder mismatch = new StringBuilder();
-    mismatch.append("a list containing\n");
-    mismatch.append("0: a list containing\n");
-    mismatch.append("  0: expected <1> but was <2>\n");
-    mismatch.append("1: <2>");
-    assertMismatch(List.of(List.of(2), 2),
-        matchesList().item(List.of(1)).item(2),
-        equalTo(mismatch.toString()));
+    assertMismatch(List.of(List.of(2), 2), matchesList().item(List.of(1)).item(2), equalTo("""
+        a list containing
+        0: a list containing
+          0: expected <1> but was <2>
+        1: <2>"""));
   }
 
   @Test
   void subListMatcher() {
-    StringBuilder mismatch = new StringBuilder();
-    mismatch.append("a list containing\n");
-    mismatch.append("0: a list containing\n");
-    mismatch.append("  0: expected <1> but was <2>\n");
-    mismatch.append("1: <2>");
-    assertMismatch(List.of(List.of(2), 2),
-        matchesList().item(matchesList().item(1)).item(2),
-        equalTo(mismatch.toString()));
+    assertMismatch(List.of(List.of(2), 2), matchesList().item(matchesList().item(1)).item(2),
+        equalTo("""
+            a list containing
+            0: a list containing
+              0: expected <1> but was <2>
+            1: <2>"""));
   }
 
 
   @Test
   void subMatcher() {
-    StringBuilder mismatch = new StringBuilder();
-    mismatch.append("a list containing\n");
-    mismatch.append("0: expected a numeric value within <0.5> of <1.0> but");
-    mismatch.append(" <2.0> differed by <0.5> more than delta <0.5>\n");
-    mismatch.append("1: <2>");
-    assertMismatch(List.of(2.0, 2),
-        matchesList().item(closeTo(1.0, 0.5)).item(2),
-        equalTo(mismatch.toString()));
+    assertMismatch(List.of(2.0, 2), matchesList().item(SUBMATCHER).item(2), equalTo("""
+        a list containing
+        0: %ERR
+        1: <2>""".replace("%ERR", SUBMATCHER_ERR)));
   }
 
   @Test
   void subMatcherAsValue() {
-    StringBuilder mismatch = new StringBuilder();
-    mismatch.append("a list containing\n");
-    mismatch.append("0: expected a numeric value within <0.5> of <1.0> but");
-    mismatch.append(" <2.0> differed by <0.5> more than delta <0.5>\n");
-    mismatch.append("1: <2>");
-    Object item0 = closeTo(1.0, 0.5);
-    assertMismatch(List.of(2.0, 2),
-        matchesList().item(item0).item(2),
-        equalTo(mismatch.toString()));
+    Object item0 = SUBMATCHER;
+    assertMismatch(List.of(2.0, 2), matchesList().item(item0).item(2), equalTo("""
+        a list containing
+        0: %ERR
+        1: <2>""".replace("%ERR", SUBMATCHER_ERR)));
   }
 
   @Test
   void provideList() {
-    StringBuilder mismatch = new StringBuilder();
-    mismatch.append("a list containing\n");
-    mismatch.append("0: a list containing\n");
-    mismatch.append("  0: <1>\n");
-    mismatch.append("1: a map containing\n");
-    mismatch.append("bar: expected <1> but was <2>\n");
-    mismatch.append("2: expected a numeric value within <0.5> of <1.0> but");
-    mismatch.append(" <2.0> differed by <0.5> more than delta <0.5>");
-
     assertMismatch(List.of(List.of(1), Map.of("bar", 2), 2.0),
-        matchesList(List.of(List.of(1), Map.of("bar", 1), closeTo(1.0, 0.5))),
-        equalTo(mismatch.toString()));
+        matchesList(List.of(List.of(1), Map.of("bar", 1), closeTo(1.0, 0.5))), equalTo("""
+            a list containing
+            0: a list containing
+              0: <1>
+            1: a map containing
+            bar: expected <1> but was <2>
+            2: %ERR""".replace("%ERR", SUBMATCHER_ERR)));
   }
 
   @Test
@@ -176,32 +159,27 @@ class ListMatcherTest {
 
   @Test
   void simpleDescribeTo() {
-    StringBuilder description = new StringBuilder();
-    description.append("a list containing\n");
-    description.append("0: <1>\n");
-    description.append("1: <3>");
-    assertDescribeTo(matchesList().item(1).item(3), equalTo(description.toString()));
+    assertDescribeTo(matchesList().item(1).item(3), equalTo("""
+        a list containing
+        0: <1>
+        1: <3>"""));
   }
 
   @Test
   void subListDescribeTo() {
-    StringBuilder description = new StringBuilder();
-    description.append("a list containing\n");
-    description.append("0: <1>\n");
-    description.append("1: a list containing\n");
-    description.append("  0: <0>");
-    assertDescribeTo(matchesList().item(1).item(matchesList().item(0)),
-        equalTo(description.toString()));
+    assertDescribeTo(matchesList().item(1).item(matchesList().item(0)), equalTo("""
+        a list containing
+        0: <1>
+        1: a list containing
+          0: <0>"""));
   }
 
   @Test
   void subMapDescribeTo() {
-    StringBuilder description = new StringBuilder();
-    description.append("a list containing\n");
-    description.append("0: <1>\n");
-    description.append("1: a map containing\n");
-    description.append("foo: <0>");
-    assertDescribeTo(matchesList().item(1).item(matchesMap().entry("foo", 0)),
-        equalTo(description.toString()));
+    assertDescribeTo(matchesList().item(1).item(matchesMap().entry("foo", 0)), equalTo("""
+        a list containing
+        0: <1>
+        1: a map containing
+        foo: <0>"""));
   }
 }

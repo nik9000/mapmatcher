@@ -14,7 +14,13 @@ val isReleaseVersion = false == version.toString().endsWith("SNAPSHOT")
 
 java {
   toolchain {
-    languageVersion.set(JavaLanguageVersion.of(8))
+    languageVersion.set(JavaLanguageVersion.of(
+      /*
+       * Use java 8 for real work but tell Eclipse we're using 16
+       * so we can use it to work with tests in java 16.
+       */
+      if (System.getProperty("eclipse.launcher") == null) 8 else 16
+    ))
   }
   withJavadocJar()
   withSourcesJar()
