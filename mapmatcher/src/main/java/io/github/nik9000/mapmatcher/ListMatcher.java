@@ -6,6 +6,7 @@
 package io.github.nik9000.mapmatcher;
 
 import static java.util.Collections.emptyList;
+import static org.hamcrest.Matchers.nullValue;
 import static io.github.nik9000.mapmatcher.MapMatcher.describeEntry;
 import static io.github.nik9000.mapmatcher.MapMatcher.describeEntryMissing;
 import static io.github.nik9000.mapmatcher.MapMatcher.describeEntryUnexepected;
@@ -71,6 +72,9 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
    *         expected followed by the provided item
    */
   public ListMatcher item(Matcher<?> valueMatcher) {
+    if (valueMatcher == null) {
+      valueMatcher = nullValue();
+    }
     List<Matcher<?>> matchers = new ArrayList<>(this.matchers);
     matchers.add(valueMatcher);
     return new ListMatcher(matchers);
