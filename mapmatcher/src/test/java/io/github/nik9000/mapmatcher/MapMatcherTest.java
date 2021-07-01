@@ -17,13 +17,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
@@ -39,9 +39,11 @@ class MapMatcherTest {
   }
 
   @Test
-  @Disabled("just identified")
-  void emptyMismatch() {
-    assertMismatch(Map.of("foo", "bar"), matchesMap(), equalTo(""));
+  void expectedEmptyMismatch() {
+    assertMismatch(Map.of("foo", "bar"), matchesMap(), equalTo("""
+        an empty map
+        foo: <unexpected> but was "bar"
+        """.strip()));
   }
 
   @Test
@@ -123,6 +125,38 @@ class MapMatcherTest {
   }
 
   @Test
+  void nullValue() {
+    Map<String, Object> map = new HashMap<>();
+    map.put("a", "foo");
+    map.put("b", null);
+    assertMap(map, expectNull());
+  }
+
+  @Test
+  void expectedNull() {
+    assertMismatch(Map.of("a", "foo", "b", "bar"), expectNull(), equalTo("""
+        a map containing
+        a: "foo"
+        b: expected null but was "bar"
+        """.trim()));
+  }
+
+  private MapMatcher expectNull() {
+    return matchesMap().entry("a", "foo").entry("b", null);
+  }
+
+  @Test
+  void expectedButWasNull() {
+    Map<String, Object> map = new HashMap<>();
+    map.put("a", "foo");
+    map.put("b", null);
+    assertMismatch(map, matchesMap().entry("a", "foo").entry("b", "bar"), equalTo("""
+        a map containing
+        a: "foo"
+        b: expected "bar" but was null"""));
+  }
+
+  @Test
   void subMap() {
     assertMismatch(Map.of("foo", Map.of("bar", 2), "baz", 2),
         matchesMap().entry("foo", Map.of("bar", 1)).entry("baz", 2), equalTo("""
@@ -130,6 +164,15 @@ class MapMatcherTest {
             foo: a map containing
               bar: expected <1> but was <2>
             baz: <2>"""));
+  }
+
+  @Test
+  void subMapMismatchEmpty() {
+    assertMismatch(Map.of(),
+        matchesMap().entry("foo", Map.of("bar", 1)).entry("baz", 2), equalTo("""
+            a map containing
+            foo: expected a map but was <missing>
+            baz: expected <2> but was <missing>"""));
   }
 
   @Test
@@ -164,6 +207,15 @@ class MapMatcherTest {
     assertMismatch(Map.of("foo", List.of(2), "bar", 2),
         matchesMap().entry("foo", List.of(1)).entry("bar", 2),
         equalTo(mismatch.toString()));
+  }
+
+  @Test
+  void subListMismatchEmpty() {
+    assertMismatch(Map.of(),
+        matchesMap().entry("foo", List.of(1)).entry("baz", 2), equalTo("""
+            a map containing
+            foo: expected a list but was <missing>
+            baz: expected <2> but was <missing>"""));
   }
 
   @Test
@@ -226,6 +278,37 @@ class MapMatcherTest {
             bar: a map containing
                 a: <2>
             baz: %ERR""".replace("%ERR", SUBMATCHER_ERR)));
+  }
+
+  @Test
+  void provideMapContainingNullMatch() {
+    Map<String, Object> map = new HashMap<>();
+    map.put("foo", 1);
+    map.put("bar", null);
+    assertMap(map, provideMapContainingNull());
+  }
+
+
+  @Test
+  void provideMapContainingNullMismatch() {
+    assertMismatch(Map.of("foo", 1, "bar", "c"),
+        provideMapContainingNull(),
+        equalTo("""
+            a map containing
+            foo: <1>
+            bar: expected null but was "c"
+            """.trim()));
+  }
+
+  private MapMatcher provideMapContainingNull() {
+    /*
+     * Iteration order of the specification map gives the order of the
+     * error message so we use a LinkedHashMap to preserve our order.
+     */
+    Map<String, Object> spec = new LinkedHashMap<>();
+    spec.put("foo", 1);
+    spec.put("bar", null);
+    return matchesMap(spec);
   }
 
   @Test

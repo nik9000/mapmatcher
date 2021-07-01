@@ -16,10 +16,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class ListMatcherTest {
@@ -29,10 +29,21 @@ class ListMatcherTest {
   }
 
   @Test
-  @Disabled("just identified")
   void emptyMismatch() {
-    assertMismatch(List.of(1), matchesList(), equalTo(""));
+    assertMismatch(List.of(1), matchesList(), equalTo("""
+        an empty list
+        0: <unexpected> but was <1>"""));
   }
+
+  @Test
+  void expectedEmptyMismatch() {
+    assertMismatch(List.of("foo", "bar"), matchesList(), equalTo("""
+        an empty list
+        0: <unexpected> but was "foo"
+        1: <unexpected> but was "bar"
+        """.strip()));
+  }
+
 
   @Test
   void missing() {
@@ -77,6 +88,38 @@ class ListMatcherTest {
   }
 
   @Test
+  void nullValue() {
+    List<Object> list = new ArrayList<>();
+    list.add("foo");
+    list.add(null);
+    assertMap(list, expectNull());
+  }
+
+  @Test
+  void expectedNull() {
+    assertMismatch(List.of("foo", "bar"), expectNull(), equalTo("""
+        a list containing
+        0: "foo"
+        1: expected null but was "bar"
+        """.trim()));
+  }
+
+  private ListMatcher expectNull() {
+    return matchesList().item("foo").item(null);
+  }
+
+  @Test
+  void expectedButWasNull() {
+    List<Object> list = new ArrayList<>();
+    list.add("foo");
+    list.add(null);
+    assertMismatch(list, matchesList().item("foo").item("bar"), equalTo("""
+        a list containing
+        0: "foo"
+        1: expected "bar" but was null"""));
+  }
+
+  @Test
   void subMap() {
     assertMismatch(List.of(Map.of("bar", 2), 2), matchesList().item(Map.of("bar", 1)).item(2),
         equalTo("""
@@ -84,6 +127,15 @@ class ListMatcherTest {
             0: a map containing
             bar: expected <1> but was <2>
             1: <2>"""));
+  }
+
+  @Test
+  void subMapMismatchEmpty() {
+    assertMismatch(List.of(1), matchesList().item(1).item(Map.of("bar", 1)),
+        equalTo("""
+            a list containing
+            0: <1>
+            1: expected a map but was <missing>"""));
   }
 
   @Test
@@ -115,6 +167,15 @@ class ListMatcherTest {
         0: a list containing
           0: expected <1> but was <2>
         1: <2>"""));
+  }
+
+  @Test
+  void subListMismatchEmpty() {
+    assertMismatch(List.of(1), matchesList().item(1).item(List.of("bar", 1)),
+        equalTo("""
+            a list containing
+            0: <1>
+            1: expected a list but was <missing>"""));
   }
 
   @Test
@@ -159,13 +220,38 @@ class ListMatcherTest {
   @Test
   void provideList() {
     assertMismatch(List.of(List.of(1), Map.of("bar", 2), 2.0),
-        matchesList(List.of(List.of(1), Map.of("bar", 1), closeTo(1.0, 0.5))), equalTo("""
+        matchesList(List.of(List.of(1), Map.of("bar", 1), closeTo(1.0, 0.5))),
+        equalTo("""
             a list containing
             0: a list containing
               0: <1>
             1: a map containing
             bar: expected <1> but was <2>
             2: %ERR""".replace("%ERR", SUBMATCHER_ERR)));
+  }
+
+  @Test
+  void provideMapContainingNullMatch() {
+    List<Object> list = new ArrayList<>();
+    list.add(1);
+    list.add(null);
+    assertMap(list, provideListContainingNull());
+  }
+
+  @Test
+  void provideMapContainingNullMismatch() {
+    assertMismatch(List.of(1, "c"), provideListContainingNull(), equalTo("""
+        a list containing
+        0: <1>
+        1: expected null but was "c"
+        """.trim()));
+  }
+
+  private ListMatcher provideListContainingNull() {
+    List<Object> spec = new ArrayList<>();
+    spec.add(1);
+    spec.add(null);
+    return matchesList(spec);
   }
 
   @Test

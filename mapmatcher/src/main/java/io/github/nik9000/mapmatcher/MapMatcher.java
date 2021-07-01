@@ -8,6 +8,7 @@ package io.github.nik9000.mapmatcher;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -114,6 +115,9 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
    * @return a new {@link MapMatcher} that expects another entry
    */
   public MapMatcher entry(Object key, Matcher<?> valueMatcher) {
+    if (valueMatcher == null) {
+      valueMatcher = nullValue();
+    }
     Map<Object, Matcher<?>> matchers = new LinkedHashMap<>(this.matchers);
     Matcher<?> old = matchers.put(key, valueMatcher);
     if (old != null) {
@@ -239,6 +243,9 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
    * for the public API methods that take {@linkplain Object}.
    */
   static Matcher<?> matcherFor(Object value) {
+    if (value == null) {
+      return nullValue();
+    }
     if (value instanceof List) {
       return ListMatcher.matchesList((List<?>) value);
     }
@@ -257,7 +264,18 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
   }
 
   static void describeEntryMissing(Matcher<?> matcher, Description description) {
-    description.appendText("expected ").appendDescriptionOf(matcher);
+    description.appendText("expected ");
+    /*
+     * Use a short description for multi-line matchers so the "but was <missing>"
+     * bit of the erro is more prominent. It's the more important part.
+     */
+    if (matcher instanceof MapMatcher) {
+      description.appendText("a map");
+    } else if (matcher instanceof ListMatcher) {
+      description.appendText("a list");
+    } else {
+      description.appendDescriptionOf(matcher);
+    }
     description.appendText(" but was <missing>");
   }
 
