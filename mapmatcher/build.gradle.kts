@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "io.github.nik9000"
-version = "0.0.3-SNAPSHOT"
+version = "0.0.3"
 val isReleaseVersion = false == version.toString().endsWith("SNAPSHOT")
 
 java {
