@@ -186,7 +186,7 @@ class MapMatcherTest {
   }
 
   @Test
-  void subEmptyMap() {
+  void subEmptyExpectedMap() {
     StringBuilder mismatch = new StringBuilder();
     mismatch.append("a map containing\n");
     mismatch.append("foo: an empty map\n");
@@ -194,6 +194,29 @@ class MapMatcherTest {
     mismatch.append("baz: <2>");
     assertMismatch(Map.of("foo", Map.of("bar", 2), "baz", 2),
         matchesMap().entry("foo", Map.of()).entry("baz", 2),
+        equalTo(mismatch.toString()));
+  }
+
+  @Test
+  void subEmptyActualMap() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a map containing\n");
+    mismatch.append("foo: a map containing\n");
+    mismatch.append("  bar: expected <2> but was <missing>\n");
+    mismatch.append("baz: <2>");
+    assertMismatch(Map.of("foo", Map.of(), "baz", 2),
+        matchesMap().entry("foo", Map.of("bar", 2)).entry("baz", 2),
+        equalTo(mismatch.toString()));
+  }
+
+  @Test
+  void subEmptyActualAndExpectedMap() {
+    StringBuilder mismatch = new StringBuilder();
+    mismatch.append("a map containing\n");
+    mismatch.append("foo: an empty map\n");
+    mismatch.append("bar: expected <2> but was <1>");
+    assertMismatch(Map.of("foo", Map.of(), "bar", 1),
+        matchesMap().entry("foo", Map.of()).entry("bar", 2),
         equalTo(mismatch.toString()));
   }
 
