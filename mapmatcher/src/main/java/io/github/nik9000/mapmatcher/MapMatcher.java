@@ -215,7 +215,7 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
     int maxKeyWidth = Stream.concat(matchers.keySet().stream(), item.keySet().stream())
         .mapToInt(k -> k.toString().length())
         .max()
-        .getAsInt();
+        .orElse(keyWidth);
     String keyFormat = "%" + maxKeyWidth + "s";
 
     for (Map.Entry<Object, Matcher<?>> e : matchers.entrySet()) {
