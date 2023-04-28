@@ -45,7 +45,9 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
     }
     return matcher;
   }
-
+  /*
+  * Create a {@linkplain ListMatcher} that matches a list with extraOk param which will applied to the children
+  * */
   public static ListMatcher matchesList(List<?> list, Boolean extraOkForChildrenMap) {
     ListMatcher matcher = matchesList();
     for (Object item : list) {
