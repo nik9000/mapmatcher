@@ -35,9 +35,10 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
   public static MapMatcher matchesMap() {
     return new MapMatcher(emptyMap(), false);
   }
+
   /*
   * Create a {@linkplain MapMatcher} with extraOk rule for all children
-  * */
+  */
   public static MapMatcher matchesMap(Boolean extraOk) {
     return new MapMatcher(emptyMap(), extraOk);
   }
