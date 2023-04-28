@@ -35,6 +35,12 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
   public static MapMatcher matchesMap() {
     return new MapMatcher(emptyMap(), false);
   }
+  /*
+  * Create a {@linkplain MapMatcher} with extraOk rule for all children
+  * */
+  public static MapMatcher matchesMap(Boolean extraOk) {
+    return new MapMatcher(emptyMap(), extraOk);
+  }
 
   /**
    * Create a {@linkplain MapMatcher} that matches a {@link Map}.
@@ -46,7 +52,15 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
    * like by calling {@link #entry entry}.
    */
   public static MapMatcher matchesMap(Map<?, ?> map) {
-    MapMatcher matcher = matchesMap();
+    MapMatcher matcher = matchesMap(false);
+    for (Map.Entry<?, ?> e : map.entrySet()) {
+      matcher = matcher.entry(e.getKey(), e.getValue());
+    }
+    return matcher;
+  }
+
+  public static MapMatcher matchesMap(Map<?, ?> map, Boolean extraOk) {
+    MapMatcher matcher = matchesMap(extraOk);
     for (Map.Entry<?, ?> e : map.entrySet()) {
       matcher = matcher.entry(e.getKey(), e.getValue());
     }
@@ -106,7 +120,7 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
    * @return a new {@link MapMatcher} that expects another entry
    */
   public MapMatcher entry(Object key, Object value) {
-    return entry(key, matcherFor(value));
+    return entry(key, matcherFor(value, extraOk));
   }
 
   /**
@@ -242,7 +256,7 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
    * Converts an unknown {@link Object} to an equality {@link Matcher}
    * for the public API methods that take {@linkplain Object}.
    */
-  static Matcher<?> matcherFor(Object value) {
+  static Matcher<?> matcherFor(Object value, Boolean extraOk) {
     if (value == null) {
       return nullValue();
     }
@@ -250,7 +264,7 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
       return ListMatcher.matchesList((List<?>) value);
     }
     if (value instanceof Map) {
-      return matchesMap((Map<?, ?>) value);
+      return matchesMap((Map<?, ?>) value, extraOk);
     }
     if (value instanceof Matcher) {
       return (Matcher<?>) value;

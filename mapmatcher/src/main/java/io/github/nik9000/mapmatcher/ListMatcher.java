@@ -41,7 +41,15 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
   public static ListMatcher matchesList(List<?> list) {
     ListMatcher matcher = matchesList();
     for (Object item : list) {
-      matcher = matcher.item(item);
+      matcher = matcher.item(item, false);
+    }
+    return matcher;
+  }
+
+  public static ListMatcher matchesList(List<?> list, Boolean extraOkForChildrenMap) {
+    ListMatcher matcher = matchesList();
+    for (Object item : list) {
+      matcher = matcher.item(item, extraOkForChildrenMap);
     }
     return matcher;
   }
@@ -51,6 +59,7 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
   private ListMatcher(List<Matcher<?>> matchers) {
     this.matchers = matchers;
   }
+
 
   /**
    * Expect a value.
@@ -62,7 +71,13 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
    *         expected followed by the provided item
    */
   public ListMatcher item(Object value) {
-    return item(matcherFor(value));
+    return item(matcherFor(value, false));
+  }
+  /*
+  * Apply the extraOk to all children
+  * */
+  public ListMatcher item(Object value, Boolean extraOk) {
+    return item(matcherFor(value, extraOk));
   }
 
   /**
