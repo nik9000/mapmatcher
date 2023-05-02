@@ -262,7 +262,7 @@ public class MapMatcher extends TypeSafeMatcher<Map<?, ?>> {
       return nullValue();
     }
     if (value instanceof List) {
-      return ListMatcher.matchesList((List<?>) value);
+      return ListMatcher.matchesList((List<?>) value, extraOk);
     }
     if (value instanceof Map) {
       return matchesMap((Map<?, ?>) value, extraOk);
