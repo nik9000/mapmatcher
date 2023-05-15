@@ -131,11 +131,11 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
 
   @Override
   protected boolean matchesSafely(List<?> item) {
-    Iterator<?> value = item.iterator();
     for(Matcher<?> matcher: matchers){
+        Iterator<?> value = item.iterator();
         boolean matching = false;
         while(value.hasNext()){
-            if(matcher.matches(value)){
+            if(matcher.matches(value.next())){
                 matching = true;
             }
         }
