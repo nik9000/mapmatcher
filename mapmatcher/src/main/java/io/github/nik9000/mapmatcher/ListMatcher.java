@@ -131,15 +131,18 @@ public class ListMatcher extends TypeSafeMatcher<List<?>> {
 
   @Override
   protected boolean matchesSafely(List<?> item) {
-    if (item.size() != matchers.size()) {
-      return false;
-    }
     Iterator<?> value = item.iterator();
-    Iterator<Matcher<?>> matcher = matchers.iterator();
-    while (matcher.hasNext()) {
-      if (false == matcher.next().matches(value.next())) {
-        return false;
-      }
+    for(Matcher<?> matcher: matchers){
+        boolean matching = false;
+        while(value.hasNext()){
+            if(matcher.matches(value)){
+                matching = true;
+            }
+        }
+        // if any matcher doesn't match with any value of item
+        if(!matching){
+            return false;
+        }
     }
     return true;
   }
